@@ -1,0 +1,8 @@
+name = "guesssong-bo"
+compatibility_date = "2025-12-16"
+
+# Static assets configuration
+# The dist folder contains the pre-built Vite application
+# Environment variables are baked into the build at compile time
+[assets]
+directory = "./dist"
