@@ -350,6 +350,32 @@ const SongCreator = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  // Format time for input display (seconds under 60, MM:SS for 60+)
+  const formatTimeInput = (seconds) => {
+    if (seconds < 60) {
+      return Math.floor(seconds).toString();
+    }
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Parse time input (accepts both "30" and "1:30" formats)
+  const parseTimeInput = (value) => {
+    if (!value || value === '') return 0;
+
+    // If it contains ':', parse as MM:SS
+    if (value.includes(':')) {
+      const parts = value.split(':');
+      const mins = parseInt(parts[0]) || 0;
+      const secs = parseInt(parts[1]) || 0;
+      return mins * 60 + secs;
+    }
+
+    // Otherwise parse as seconds
+    return parseInt(value) || 0;
+  };
+
   const handleTagToggle = (tag) => {
     setSelectedTags(prev =>
       prev.some(t => t.value === tag.value)
@@ -549,17 +575,15 @@ const SongCreator = () => {
             </div>
 
             <div className="form-group">
-              <label>Difficulty (1-5)</label>
+              <label>Difficulty</label>
               <select
                 value={difficulty}
                 onChange={(e) => setDifficulty(e.target.value)}
               >
                 <option value="">Select difficulty</option>
-                <option value="1">1 - Very Easy</option>
-                <option value="2">2 - Easy</option>
-                <option value="3">3 - Medium</option>
-                <option value="4">4 - Hard</option>
-                <option value="5">5 - Very Hard</option>
+                <option value="1">1 - קל</option>
+                <option value="2">2 - בינוני</option>
+                <option value="3">3 - קשה</option>
               </select>
             </div>
 
@@ -684,8 +708,147 @@ const SongCreator = () => {
 
           {selectedSpotifyTrack && (
             <div className="spotify-player-section">
-              {/* Spotify Embed Player */}
-              <div className="spotify-embed-container">
+              {/* Track Info */}
+              <div className="track-info-bar">
+                <img
+                  src={selectedSpotifyTrack.album.images[2]?.url || selectedSpotifyTrack.album.images[0]?.url}
+                  alt={selectedSpotifyTrack.name}
+                  className="track-thumbnail"
+                />
+                <div className="track-details">
+                  <div className="track-name">{selectedSpotifyTrack.name}</div>
+                  <div className="track-artist">{selectedSpotifyTrack.artists.map(a => a.name).join(', ')}</div>
+                </div>
+                <span className="spotify-id-badge">ID: {spotifyId}</span>
+              </div>
+
+              {/* Custom Audio Player with Clip Markers */}
+              {selectedSpotifyTrack.preview_url && (
+                <div className="custom-player">
+                  <audio ref={audioRef} src={selectedSpotifyTrack.preview_url} />
+
+                  {/* Play/Pause Button */}
+                  <div className="player-controls">
+                    <button
+                      className="play-button"
+                      onClick={handlePlayPause}
+                      title={isPlaying ? 'Pause' : 'Play'}
+                    >
+                      {isPlaying ? '⏸' : '▶'}
+                    </button>
+                    <button
+                      className="preview-clip-button"
+                      onClick={handlePreviewClip}
+                      title="Preview Clip"
+                    >
+                      🎵 Preview Clip
+                    </button>
+                  </div>
+
+                  {/* Progress Bar with Clip Markers */}
+                  <div className="player-progress">
+                    <span className="time-label">{formatTime(currentTime)}</span>
+
+                    <div
+                      ref={timelineRef}
+                      className="timeline-container"
+                      onClick={handleTimelineClick}
+                    >
+                      <div className="timeline-bg">
+                        {/* Clip region highlight */}
+                        <div
+                          className="clip-region-highlight"
+                          style={{
+                            left: `${(startTime / duration) * 100}%`,
+                            width: `${((stopTime - startTime) / duration) * 100}%`
+                          }}
+                        />
+
+                        {/* Current position */}
+                        <div
+                          className="timeline-progress"
+                          style={{ width: `${(currentTime / duration) * 100}%` }}
+                        />
+
+                        {/* Start Marker */}
+                        <div
+                          className="clip-marker clip-marker-start"
+                          style={{ left: `${(startTime / duration) * 100}%` }}
+                          onMouseDown={(e) => handleMarkerMouseDown('start', e)}
+                        >
+                          <div className="marker-handle" />
+                          <div className="marker-label">START<br/>{formatTime(startTime)}</div>
+                        </div>
+
+                        {/* End Marker */}
+                        <div
+                          className="clip-marker clip-marker-end"
+                          style={{ left: `${(stopTime / duration) * 100}%` }}
+                          onMouseDown={(e) => handleMarkerMouseDown('end', e)}
+                        >
+                          <div className="marker-handle" />
+                          <div className="marker-label">END<br/>{formatTime(stopTime)}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <span className="time-label">{formatTime(duration)}</span>
+                  </div>
+
+                  {/* Clip Info Display */}
+                  <div className="clip-info-display">
+                    <span>Clip Duration: <strong>{formatTime(stopTime - startTime)}</strong></span>
+                    <span className="clip-range-text">({formatTime(startTime)} → {formatTime(stopTime)})</span>
+                  </div>
+                </div>
+              )}
+
+              {!selectedSpotifyTrack.preview_url && (
+                <div className="no-preview-warning">
+                  ⚠️ No preview available for this track. Use the inputs below to set clip times.
+                </div>
+              )}
+
+              {/* Manual Clip Input (always visible as fallback) */}
+              <div className="manual-clip-inputs">
+                <h4>Clip Time Settings</h4>
+                <div className="clip-input-row">
+                  <div className="clip-input-field">
+                    <label>Start Time:</label>
+                    <input
+                      type="text"
+                      value={formatTimeInput(startTime)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '' || val === undefined) {
+                          setStartTime(0);
+                          setStopTime(30);
+                          return;
+                        }
+                        const newStart = Math.max(0, parseTimeInput(val));
+                        setStartTime(newStart);
+                        setStopTime(newStart + 30);
+                      }}
+                      placeholder="30"
+                      className="clip-time-input"
+                    />
+                    <span className="time-display-text">{formatTime(startTime)}</span>
+                  </div>
+                  <div className="clip-input-field">
+                    <label>End Time (auto +30s):</label>
+                    <input
+                      type="text"
+                      value={formatTimeInput(stopTime)}
+                      disabled
+                      className="clip-time-input disabled"
+                    />
+                    <span className="time-display-text">{formatTime(stopTime)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Spotify Embed (for reference) */}
+              <div className="spotify-embed-container" style={{ marginTop: '20px' }}>
                 <iframe
                   src={`https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`}
                   width="100%"
@@ -696,44 +859,6 @@ const SongCreator = () => {
                   title="Spotify Player"
                   className="spotify-embed"
                 />
-              </div>
-
-              <div className="track-info-bar">
-                <span className="spotify-id-badge">Spotify ID: {spotifyId}</span>
-              </div>
-
-              {/* Clip Points Input */}
-              <div className="clip-points-section">
-                <h4>Set Clip Points (in seconds)</h4>
-                <div className="clip-inputs">
-                  <div className="clip-input-group">
-                    <label>Start Time:</label>
-                    <input
-                      type="number"
-                      value={startTime}
-                      onChange={(e) => setStartTime(Math.max(0, parseFloat(e.target.value) || 0))}
-                      min="0"
-                      step="0.1"
-                      placeholder="0"
-                    />
-                    <span className="clip-formatted">{formatTime(startTime)}</span>
-                  </div>
-                  <div className="clip-input-group">
-                    <label>Stop Time:</label>
-                    <input
-                      type="number"
-                      value={stopTime}
-                      onChange={(e) => setStopTime(Math.max(startTime + 1, parseFloat(e.target.value) || 0))}
-                      min={startTime + 1}
-                      step="0.1"
-                      placeholder="30"
-                    />
-                    <span className="clip-formatted">{formatTime(stopTime)}</span>
-                  </div>
-                  <div className="clip-duration-display">
-                    Clip Duration: {formatTime(stopTime - startTime)}
-                  </div>
-                </div>
               </div>
             </div>
           )}

@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import SongsManagement from './pages/SongsManagement';
 import SongCreator from './pages/SongCreator';
+import SpotifyCallback from './pages/SpotifyCallback';
 import './App.css';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/callback" element={<SpotifyCallback />} />
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
         </Routes>

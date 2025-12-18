@@ -14,5 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication
+// Note: Firebase Auth uses LOCAL persistence by default in web browsers
 export const auth = getAuth(app);
+
 export default app;

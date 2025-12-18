@@ -1,0 +1,349 @@
+.spotify-player {
+  background: linear-gradient(135deg, #1db954 0%, #191414 100%);
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 600px;
+  margin: 20px auto;
+}
+
+.player-error {
+  text-align: center;
+  padding: 20px;
+  background: rgba(255, 0, 0, 0.1);
+  border-radius: 8px;
+  color: #ff6b6b;
+}
+
+.player-track-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-album-art {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  object-fit: cover;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.player-track-details {
+  flex: 1;
+  overflow: hidden;
+}
+
+.player-track-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-track-artist {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.control-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.control-button:active {
+  transform: scale(0.95);
+}
+
+.play-button {
+  width: 60px;
+  height: 60px;
+  font-size: 28px;
+  background: #1db954;
+}
+
+.play-button:hover {
+  background: #1ed760;
+  box-shadow: 0 0 20px rgba(29, 185, 84, 0.4);
+}
+
+.player-progress-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.time-display {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 40px;
+  text-align: center;
+}
+
+.progress-bar-container {
+  flex: 1;
+  cursor: pointer;
+  padding: 50px 0 10px 0;
+  position: relative;
+}
+
+.progress-bar-bg {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  position: relative;
+  overflow: visible;
+}
+
+.clip-region {
+  position: absolute;
+  height: 100%;
+  background: rgba(29, 185, 84, 0.4);
+  border-left: 3px solid #1db954;
+  border-right: 3px solid #1db954;
+  top: 0;
+  pointer-events: none;
+  z-index: 1;
+  box-shadow: inset 0 0 10px rgba(29, 185, 84, 0.3);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #1db954;
+  border-radius: 4px;
+  transition: width 0.1s linear;
+  position: relative;
+  z-index: 2;
+}
+
+.progress-bar-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.progress-bar-container:hover .progress-bar-fill::after {
+  opacity: 1;
+}
+
+.progress-bar-container:hover .progress-bar-bg {
+  height: 10px;
+}
+
+/* Clip markers */
+.clip-marker {
+  position: absolute;
+  top: -45px;
+  transform: translateX(-50%);
+  cursor: grab;
+  z-index: 10;
+  user-select: none;
+  transition: transform 0.1s ease;
+}
+
+.clip-marker:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+.clip-marker.dragging {
+  cursor: grabbing;
+  transform: translateX(-50%) scale(1.15);
+  z-index: 20;
+}
+
+.start-marker {
+  color: #1db954;
+}
+
+.end-marker {
+  color: #ff6b6b;
+}
+
+.marker-label {
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 4px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+}
+
+.marker-time {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 6px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+}
+
+.start-marker .marker-time {
+  border: 3px solid #1db954;
+  background: rgba(29, 185, 84, 0.2);
+  color: #1db954;
+}
+
+.end-marker .marker-time {
+  border: 3px solid #ff6b6b;
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+}
+
+/* Clip info section */
+.clip-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+
+.clip-duration-label {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
+.clip-duration-value {
+  color: #1db954;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.clip-range {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.player-volume-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+.volume-icon {
+  font-size: 18px;
+}
+
+.volume-slider {
+  width: 120px;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.volume-slider:hover::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+
+.volume-slider:hover::-moz-range-thumb {
+  transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .spotify-player {
+    padding: 15px;
+  }
+
+  .player-album-art {
+    width: 60px;
+    height: 60px;
+  }
+
+  .player-track-name {
+    font-size: 16px;
+  }
+
+  .player-track-artist {
+    font-size: 12px;
+  }
+
+  .control-button {
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+  }
+
+  .play-button {
+    width: 55px;
+    height: 55px;
+    font-size: 24px;
+  }
+
+  .volume-slider {
+    width: 80px;
+  }
+}
