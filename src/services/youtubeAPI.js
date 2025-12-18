@@ -1,7 +1,7 @@
 // YouTube Data API v3 Service
-// Using API key directly from environment variables
+// API key hardcoded for internal backoffice use
 
-const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
+const YOUTUBE_API_KEY = 'AIzaSyD9fOmxAC75yt7af0J0UsgZMD3jHxOXK3o';
 const YOUTUBE_API_BASE_URL = 'https://www.googleapis.com/youtube/v3';
 
 export const youtubeAPI = {

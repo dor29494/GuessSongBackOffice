@@ -6,9 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:cloudflare": "VITE_YOUTUBE_API_KEY=$YOUTUBE_API_KEY VITE_SPOTIFY_CLIENT_ID=$SPOTIFY_CLIENT_ID VITE_SPOTIFY_CLIENT_SECRET=$SPOTIFY_CLIENT_SECRET vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "deploy": "vite build && wrangler deploy"
+    "deploy": "npm run build:cloudflare && wrangler deploy"
   },
   "dependencies": {
     "axios": "^1.13.2",
