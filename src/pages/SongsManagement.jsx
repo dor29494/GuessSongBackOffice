@@ -26,6 +26,34 @@ const getTagNames = (tagValue) => {
   return tags.map(t => t.name).join(', ');
 };
 
+// Format time for input display (seconds under 60, MM:SS for 60+)
+const formatTimeInput = (seconds) => {
+  const num = parseFloat(seconds);
+  if (isNaN(num)) return '';
+  if (num < 60) {
+    return Math.floor(num).toString();
+  }
+  const mins = Math.floor(num / 60);
+  const secs = Math.floor(num % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+};
+
+// Parse time input (accepts both "30" and "1:30" formats)
+const parseTimeInput = (value) => {
+  if (!value || value === '') return 0;
+
+  // If it contains ':', parse as MM:SS
+  if (value.includes(':')) {
+    const parts = value.split(':');
+    const mins = parseInt(parts[0]) || 0;
+    const secs = parseInt(parts[1]) || 0;
+    return mins * 60 + secs;
+  }
+
+  // Otherwise parse as seconds
+  return parseInt(value) || 0;
+};
+
 const SongsManagement = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -391,8 +419,8 @@ const SongsManagement = () => {
                   <td className="media-id">{song.media?.spotifyId}</td>
                   <td>{song.startCut}</td>
                   <td>{song.stopCut}</td>
-                  <td>{song.insideOf120}</td>
-                  <td>{song.top30}</td>
+                  <td>{song.insideOf120 === 'TRUE' || song.insideOf120 === true ? '✓' : ''}</td>
+                  <td>{song.top30 === 'TRUE' || song.top30 === true ? '✓' : ''}</td>
                   <td className="tag-cell">
                     {song.tag && (
                       <span className="tag-display" title={`Value: ${song.tag}`}>
@@ -491,13 +519,16 @@ const SongsManagement = () => {
 
                 <div className="form-group">
                   <label>Difficulty</label>
-                  <input
-                    type="text"
+                  <select
                     name="difficulty"
                     value={formData.difficulty}
                     onChange={handleChange}
-                    placeholder="1-5"
-                  />
+                  >
+                    <option value="">Select difficulty</option>
+                    <option value="1">1 - קל</option>
+                    <option value="2">2 - בינוני</option>
+                    <option value="3">3 - קשה</option>
+                  </select>
                 </div>
               </div>
 
@@ -549,47 +580,69 @@ const SongsManagement = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Start Cut (seconds)</label>
+                  <label>Start Time</label>
                   <input
                     type="text"
                     name="startCut"
-                    value={formData.startCut}
-                    onChange={handleChange}
-                    placeholder="0"
+                    value={formatTimeInput(formData.startCut)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      const parsedSeconds = parseTimeInput(val);
+                      setFormData(prev => ({
+                        ...prev,
+                        startCut: parsedSeconds,
+                        stopCut: parsedSeconds + 30
+                      }));
+                    }}
+                    placeholder="30"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Stop Cut (seconds)</label>
+                  <label>End Time (auto +30s)</label>
                   <input
                     type="text"
                     name="stopCut"
-                    value={formData.stopCut}
-                    onChange={handleChange}
-                    placeholder="30"
+                    value={formatTimeInput(formData.stopCut)}
+                    disabled
+                    style={{ opacity: 0.7, cursor: 'not-allowed' }}
                   />
                 </div>
               </div>
 
               <div className="form-row">
-                <div className="form-group">
-                  <label>Inside of 120</label>
-                  <input
-                    type="text"
-                    name="insideOf120"
-                    value={formData.insideOf120}
-                    onChange={handleChange}
-                  />
+                <div className="form-group checkbox-group">
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      name="insideOf120"
+                      checked={formData.insideOf120 === 'TRUE' || formData.insideOf120 === true}
+                      onChange={(e) => {
+                        setFormData(prev => ({
+                          ...prev,
+                          insideOf120: e.target.checked ? 'TRUE' : 'FALSE'
+                        }));
+                      }}
+                    />
+                    <span>Inside of 120</span>
+                  </label>
                 </div>
 
-                <div className="form-group">
-                  <label>Top 30</label>
-                  <input
-                    type="text"
-                    name="top30"
-                    value={formData.top30}
-                    onChange={handleChange}
-                  />
+                <div className="form-group checkbox-group">
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      name="top30"
+                      checked={formData.top30 === 'TRUE' || formData.top30 === true}
+                      onChange={(e) => {
+                        setFormData(prev => ({
+                          ...prev,
+                          top30: e.target.checked ? 'TRUE' : 'FALSE'
+                        }));
+                      }}
+                    />
+                    <span>Top 30</span>
+                  </label>
                 </div>
               </div>
 

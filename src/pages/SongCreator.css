@@ -1038,3 +1038,311 @@
     justify-content: center;
   }
 }
+
+/* Custom Audio Player with Clip Markers */
+.custom-player {
+  background: linear-gradient(135deg, #1db954 0%, #191414 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  color: white;
+}
+
+.track-info-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.track-thumbnail {
+  width: 60px;
+  height: 60px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.track-details {
+  flex: 1;
+}
+
+.track-name {
+  font-weight: bold;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.track-artist {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.player-controls {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.play-button,
+.preview-clip-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: bold;
+}
+
+.play-button {
+  background: #1db954;
+  color: white;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+}
+
+.play-button:hover {
+  background: #1ed760;
+  transform: scale(1.05);
+}
+
+.preview-clip-button {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.preview-clip-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.player-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.time-label {
+  font-size: 12px;
+  min-width: 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.timeline-container {
+  flex: 1;
+  padding: 30px 0 10px 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.timeline-bg {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  position: relative;
+  overflow: visible;
+}
+
+.clip-region-highlight {
+  position: absolute;
+  height: 100%;
+  background: rgba(29, 185, 84, 0.4);
+  border-left: 2px solid #1db954;
+  border-right: 2px solid #1db954;
+  top: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.timeline-progress {
+  position: absolute;
+  height: 100%;
+  background: #1db954;
+  border-radius: 4px;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  transition: width 0.1s linear;
+}
+
+.clip-marker {
+  position: absolute;
+  top: -28px;
+  transform: translateX(-50%);
+  cursor: grab;
+  z-index: 10;
+  user-select: none;
+}
+
+.clip-marker:active {
+  cursor: grabbing;
+}
+
+.marker-handle {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid;
+  margin: 0 auto 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.clip-marker-start .marker-handle {
+  border-color: #1db954;
+}
+
+.clip-marker-end .marker-handle {
+  border-color: #ff6b6b;
+}
+
+.marker-label {
+  font-size: 9px;
+  font-weight: bold;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  line-height: 1.3;
+}
+
+.clip-marker-start .marker-label {
+  color: #1db954;
+  border: 1px solid #1db954;
+}
+
+.clip-marker-end .marker-label {
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}
+
+.clip-info-display {
+  text-align: center;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.clip-info-display strong {
+  color: #1db954;
+  font-size: 16px;
+}
+
+.clip-range-text {
+  margin-left: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 12px;
+}
+
+.no-preview-warning {
+  padding: 20px;
+  text-align: center;
+  background: rgba(255, 193, 7, 0.2);
+  border: 2px solid #ffc107;
+  border-radius: 8px;
+  color: #ffc107;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+/* Manual Clip Inputs */
+.manual-clip-inputs {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.manual-clip-inputs h4 {
+  margin: 0 0 20px 0;
+  color: white;
+  font-size: 18px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.clip-input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.clip-input-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.clip-input-field label {
+  display: block;
+  margin-bottom: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clip-time-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  background: white;
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.clip-time-input:focus {
+  outline: none;
+  border-color: #1db954;
+  box-shadow: 0 0 0 3px rgba(29, 185, 84, 0.2);
+}
+
+.clip-time-input.disabled {
+  background: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  opacity: 0.7;
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #666;
+}
+
+.time-display-text {
+  display: block;
+  margin-top: 8px;
+  color: #1ed760;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.clip-duration-badge {
+  padding: 14px 28px;
+  background: rgba(29, 185, 84, 0.3);
+  border: 3px solid #1db954;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  white-space: nowrap;
+  align-self: center;
+  box-shadow: 0 4px 12px rgba(29, 185, 84, 0.3);
+}
+
+.clip-duration-badge strong {
+  color: #1ed760;
+  font-size: 22px;
+  margin-left: 8px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
