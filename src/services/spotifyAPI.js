@@ -1,8 +1,8 @@
 // Spotify Web API Service
-// Using credentials directly from environment variables
+// Credentials hardcoded for internal backoffice use
 
-const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-const SPOTIFY_CLIENT_SECRET = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+const SPOTIFY_CLIENT_ID = '4f60b6a5accf4e329987b3d71b280d9a';
+const SPOTIFY_CLIENT_SECRET = '1249ed0458124bb184225611d2b3f8cb';
 const SPOTIFY_API_BASE_URL = 'https://api.spotify.com/v1';
 const SPOTIFY_TOKEN_URL = 'https://accounts.spotify.com/api/token';
 
