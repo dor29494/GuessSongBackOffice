@@ -6,3 +6,9 @@ compatibility_date = "2025-12-16"
 # Environment variables are baked into the build at compile time
 [assets]
 directory = "./dist"
+
+# Environment variables
+[vars]
+VITE_YOUTUBE_API_KEY = "AIzaSyD9fOmxAC75yt7af0J0UsgZMD3jHxOXK3o"
+VITE_SPOTIFY_CLIENT_ID = "4f60b6a5accf4e329987b3d71b280d9a"
+VITE_SPOTIFY_CLIENT_SECRET = "1249ed0458124bb184225611d2b3f8cb"
