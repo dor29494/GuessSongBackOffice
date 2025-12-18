@@ -23,9 +23,10 @@ export const authAPI = {
         }
       };
     } catch (error) {
+      console.error('Login error:', error.code, error.message);
       return {
         success: false,
-        error: getErrorMessage(error.code)
+        error: getErrorMessage(error.code) || error.message
       };
     }
   },
@@ -44,9 +45,10 @@ export const authAPI = {
         }
       };
     } catch (error) {
+      console.error('Google login error:', error.code, error.message);
       return {
         success: false,
-        error: getErrorMessage(error.code)
+        error: getErrorMessage(error.code) || error.message
       };
     }
   },
