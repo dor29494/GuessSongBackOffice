@@ -1,8 +1,6 @@
 // Spotify Web API Service
-// Get your credentials from: https://developer.spotify.com/dashboard
+// Now using Cloudflare Pages Functions for secure server-side API calls
 
-const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID || '';
-const SPOTIFY_CLIENT_SECRET = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET || '';
 const SPOTIFY_API_BASE_URL = 'https://api.spotify.com/v1';
 
 let accessToken = null;
@@ -10,7 +8,7 @@ let tokenExpiry = null;
 
 export const spotifyAPI = {
   /**
-   * Get Spotify access token using Client Credentials flow
+   * Get Spotify access token using server-side Cloudflare Function
    * @returns {Promise<string|null>} Access token
    */
   getAccessToken: async () => {
@@ -19,28 +17,20 @@ export const spotifyAPI = {
       return accessToken;
     }
 
-    if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET) {
-      console.error('Spotify credentials are not configured');
-      return null;
-    }
-
     try {
-      const credentials = btoa(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`);
-
-      const response = await fetch('https://accounts.spotify.com/api/token', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Basic ${credentials}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'grant_type=client_credentials'
-      });
+      // Call the Cloudflare Pages Function endpoint
+      const response = await fetch('/api/spotify-token');
 
       if (!response.ok) {
         throw new Error('Failed to get Spotify access token');
       }
 
       const data = await response.json();
+
+      if (!data.success) {
+        throw new Error(data.error || 'Spotify authentication failed');
+      }
+
       accessToken = data.access_token;
       // Set expiry to 5 minutes before actual expiry for safety
       tokenExpiry = Date.now() + (data.expires_in - 300) * 1000;
